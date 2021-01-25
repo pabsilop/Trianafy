@@ -9,9 +9,11 @@ class User {
     }
 }
 
+//const password = bcrypt.hashSync('12345678', parseInt(process.env.BCRYPT_ROUNDS));
+
 let users = [
-    new User('Pablo123', 'Pablo Silva López', 'pablo@gmail.com', '1234', 1),
-    new User('Laura123', 'Laura Silva López', 'laura@gmail.com', '1234', 2)
+    new User('Pablo123', 'Pablo Silva López', 'pablo@gmail.com', '123' , 1),
+    new User('Laura123', 'Laura Silva López', 'laura@gmail.com', '123' , 2)
 ];
 
 const indexOfPorId = (id) => {
@@ -62,7 +64,7 @@ const userRepository = {
         const posicionEncontrado = indexOfPorId(id);
         if(posicionEncontrado != -1)
             users.splice(posicionEncontrado, 1);
-    }
+    } 
 }
 
 export {

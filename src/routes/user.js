@@ -8,17 +8,16 @@ import { validar } from '../middlewares/validacion'
 
 const router = Router();
 
-router.get('/:id', [
+/*router.get('/:id', [
     param('id').isInt().withMessage('ID debe ser un número entero')
 ],
 validar,
-UserController.usuarioPorId);
-
+UserController.usuarioPorId);*/
 router.get('/user', UserController.todosLosUsuarios);
 
 router.get('/me', UserController.me);
 
-//router.get('/:id', UserController.usuarioPorId);
+router.get('/:id', UserController.usuarioPorId);
 
 router.post('/', [
     body('username').isLength({min: 5}).withMessage('La longitud mínima del nombre de usuario son 5 caracteres'),
