@@ -6,14 +6,16 @@ const UserController = {
         res.json(userRepository.findAll());
     },
 
-    usuarioPorId : (req, res) => {
+    usuarioPorId: (req, res) => {
+
         let user = userRepository.findById(req.params.id);
-        if(user != undefined) {
+        if (user != undefined) {
             res.json(user);
-        }else {
-            res.sendStatus(400);
+        } else {
+            res.sendStatus(404);
         }
-    },
+
+},
     me : (req, res) => {
         res.json(req.context.me);
     },

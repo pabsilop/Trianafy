@@ -1,14 +1,17 @@
 class User {
 
-    constructor(id, username) {
+    constructor(username, fullName, email, password, id = 0) {
         this.id = id;
         this.username = username;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
     }
 }
 
 let users = [
-    new User(1, 'Pablo Silva López'),
-    new User(2, 'Laura Silva López')
+    new User('Pablo123', 'Pablo Silva López', 'pablo@gmail.com', '1234', 1),
+    new User('Laura123', 'Laura Silva López', 'laura@gmail.com', '1234', 2)
 ];
 
 const indexOfPorId = (id) => {
@@ -18,6 +21,11 @@ const indexOfPorId = (id) => {
             posicionEncontrado = i;
     }
     return posicionEncontrado;
+}
+
+const emailExists = (email) => {
+    let emails = users.map(user => user.email);
+    return emails.includes(email);
 }
 
 const userRepository = {
@@ -36,7 +44,7 @@ const userRepository = {
     create(newUser){
         const lastId = users.length == 0 ? 0 : users[users.length-1].id;
         const newId = lastId + 1;
-        const result = new User(newId, newUser.username);
+        const result = new User(newUser.username, newUser.fullName, newUser.email, newUser.email, newUser.password, newId);
         users.push(result);
         return result;
     },

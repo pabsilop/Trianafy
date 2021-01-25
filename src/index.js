@@ -18,6 +18,8 @@ app.use(morgan('dev'))
 morganBody(app);
 
 app.use('/users', routes.user);
+app.use('/songs', routes.song);
+
 
 app.listen(process.env.PORT, () =>
     console.log(
