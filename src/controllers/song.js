@@ -17,7 +17,7 @@ const SongController = {
         res.json(req.context.me);
     },
     nuevaCancion : (req, res) => {
-        let cancionCreada = songsRepository.create(new User(undefined, req.body.title));
+        let cancionCreada = songsRepository.create(new Song(undefined, req.body.title));
         res.status(201).json(cancionCreada);
     },
     editarCancion: (req, res) => {
