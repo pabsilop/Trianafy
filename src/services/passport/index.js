@@ -5,10 +5,6 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { User, userRepository } from '../../models/users';
 import bcrypt from 'bcryptjs';
 
-
-/**
- * Estrategia de autenticación local (con username y password)
- */
  passport.use(new LocalStrategy({
     usernameField: "username",
     passwordField: "password",
@@ -24,10 +20,6 @@ import bcrypt from 'bcryptjs';
 
 }));
 
-
-/**
- * Estrategia de autenticación basada en Token
- */
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET,
@@ -36,10 +28,8 @@ const opts = {
 
 passport.use('token', new JwtStrategy(opts, async (jwt_payload, done) => {
 
-    // Extraemos el id del campo sub del payload
     const user_id = jwt_payload.sub;
-
-    // Buscamos el usuario por ID
+    
     const user = await userRepository.findById(user_id);
     if (user == undefined)
         return done(null, false); // No existe el usuario

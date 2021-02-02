@@ -7,23 +7,15 @@ import { token } from "../services/passport";
 
 const router = Router();
 
-/*=================================================*/
-
-//Ver todas las listas de reproducción existentes
 router.get('/', token(), PlayListController.todasLasPlayList);
 
-//Ver la información de una lista de reproducción seleccionada
 router.get('/:id',
     validar, PlayListController.playListPorId);
 
-//Ver todas las canciones de una lista de reproducción existente
 router.get('/:id/songs', [], validar, PlayListController.todasLasCancionesDeUnaPlayList);
 
-//Ver una canción de una lista de reproducción.
 router.get('/:idSong/songs/:idPlayList', [], validar, PlayListController.cancionDePlayList);
-/*=================================================*/
 
-//Añade una nueva lista de reproducción
 router.post('/', [
     body('nombre')
         .exists().withMessage('El campo nombre es requerido')
@@ -35,18 +27,12 @@ router.post('/', [
 ],
     validar, PlayListController.nuevaPlayList);
 
-//Añade una canción existente a una lista de reproducción.
 router.post('/:idSong/songs/:idPlayList', [], validar, PlayListController.añadirCancionToPlayList);
-/*=================================================*/
 
-//Modificar el contenido de una lista de reproducción
 router.put('/:id', PlayListController.editarPlayList);
-/*=================================================*/
 
-//Borrar una lista de reproducción
 router.delete('/:id', PlayListController.eliminarPlayList);
 
-//Borrar una canción de una lista de reproducción
 router.delete('/:idSong/songs/:idPlayList', PlayListController.eliminarCancionDePlayList);
 
 export default router;
