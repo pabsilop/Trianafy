@@ -1,62 +1,52 @@
-class Songs {
+import 'dotenv/config';
+import mongoose from 'mongoose';
+const {Schema} =mongoose;
 
-    constructor(id, title, artist, album, year) {
-        this.id = id;
-        this.title = title;
-        this.artist = artist;
-        this.album = album;
-        this.year = year;
-    }
-}
+const songSchema = new Schema({
+    title: String,
+    artist: String,
+    album: String,
+    year: Date
+})
 
-let songs = [
-    new Songs(1, 'Better Off(Diying)', 'Lil Peep', 'Come over when you re sober', '2017'),
-    new Songs(2, 'Crybaby', 'Lil Peep', 'Crybaby', '2017'),
-    new Songs(3, 'Driveaway', 'Lil Peep', 'Crybaby', '2017')
-];
-
-const indexOfPorId = (id) => {
-    let posicionEncontrado = -1;
-    for (let i = 0; i < songs.length && posicionEncontrado == -1; i++) {
-        if (songs[i].id == id)
-            posicionEncontrado = i;
-    }
-    return posicionEncontrado;
-}
+const Song = mongoose.model('Song', songSchema);
 
 const songsRepository = {
-    findAll() {
-        return songs;
-    },
-    findById(id) {
-       const posicion = indexOfPorId(id);
-       return posicion == -1 ? undefined : songs[posicion];
-    },
-    create(newSong){
-        const lastId = songs.length == 0 ? 0 : songs[songs.length-1].id;
-        const newId = lastId + 1;
-        const result = new User(newId, newSong.title, newSong.artist, newSong.album, newSong.year);
-        users.push(result);
+   async findAll() {
+        const result = await Song.find({}).exec();
         return result;
     },
-    updateById(id, modifiedSong) {
-        const posicionEncontrado = indexOfPorId(id)
-        if (posicionEncontrado != -1) {
-            songs[posicionEncontrado].title = modifiedSong.title;
+    async findById(id) {
+       const result = await Song.findById(id).exec();
+       return result != null ? result : undefined;
+    },
+   async create(newSong){
+       const song = new Song({
+title : newSong.title,
+artist: newSong.artist,
+album : newSong.album,
+year: newSong.year
+       });
+       const result = await song.save();
+       return result;
+    },
+  async  updateById(id, modifiedSong) {
+        const cancionIS = await Song.findById(id);
+        console.log(cancionIS);
+        if(cancionIS != null){
+            console.log(modifiedSong);
+            return Object.assign(cancionIS, modifiedSong).save();
+        }    else{
+            return undefined;
         }
-        return posicionEncontrado != -1 ? songs[posicionEncontrado] : undefined;
     },
-    update(modifiedSong){
-        return this.update(modifiedSong.id, modifiedSong);
-    },
-    delete(id){
-        const posicionEncontrado = indexOfPorId(id);
-        if(posicionEncontrado != -1)
-            songs.splice(posicionEncontrado, 1);
+    async delete(id){
+          await Song.findOneAndDelete(id).exec();
     }
 }
 
+
 export {
-    Songs,
+    Song,
     songsRepository
 }

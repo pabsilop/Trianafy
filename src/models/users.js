@@ -1,73 +1,74 @@
-class User {
+import bcrypt from 'bcryptjs';
+import 'dotenv/config';
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
-    constructor(username, fullName, email, password, id = 0) {
-        this.id = id;
-        this.username = username;
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
-    }
-}
-
-//const password = bcrypt.hashSync('12345678', parseInt(process.env.BCRYPT_ROUNDS));
-
-let users = [
-    new User('Pablo123', 'Pablo Silva López', 'pablo@gmail.com', '123' , 1),
-    new User('Laura123', 'Laura Silva López', 'laura@gmail.com', '123' , 2)
-];
-
-const indexOfPorId = (id) => {
-    let posicionEncontrado = -1;
-    for (let i = 0; i < users.length && posicionEncontrado == -1; i++) {
-        if (users[i].id == id)
-            posicionEncontrado = i;
-    }
-    return posicionEncontrado;
-}
-
-const emailExists = (email) => {
-    let emails = users.map(user => user.email);
-    return emails.includes(email);
-}
-
-const userRepository = {
+const userSchema = new Schema({
+    fullname: String,
+    username: String,
+    email: String,
+    password: String
+  });
+  const User = mongoose.model('User', userSchema);
+  
+  const emailExists = async (email) => {
+    const result = await User.countDocuments({ email: email }).exec();
+    console.log(result > 0);
+    return result > 0;
+  
+  }
+  const userRepository = {
+  
+  
+    async findAll() {
+      const result = await User.find({}).exec();
+      return result;
+    },
+    async findById(id) {
+      const result = await User.findById(id).exec();
+      return result != null ? result : undefined;
+    },
+    async findByUserName(username) {
+      const result = await User.findOne({ username: username }).exec();
+      return result != null ? result : undefined;
+    },
+  
+    async create(newUser) {
+      const theUser = new User({
+        fullname: newUser.fullname,
+        username: newUser.username,
+        email: newUser.email,
+        password: newUser.password
+  
+      });
+      const result = await theUser.save();
+      return result;
+    },
+  
+    async updateById(id, modifiedUser) {
+  
+      const userSaved = await User.findById(id);
+  
+      if (userSaved != null) {
+        console.log(id);
+        return Object.assign(userSaved, modifiedUser).save();
+  
+      } else
+        return undefined;
+    },
+    update(modifiedUser) {
+      return this.updateById(modifiedUser.id, modifiedUser);
+    },
+    async delete(id) {
     
-    findAll() {
-        return users;
-    },
-    findById(id) {
-        /*
-        let result = users.filter(user => user.id == id);
-        return Array.isArray(result) && result.length > 0 ? result[0] : undefined;
-        */
-       const posicion = indexOfPorId(id);
-       return posicion == -1 ? undefined : users[posicion];
-    },
-    create(newUser){
-        const lastId = users.length == 0 ? 0 : users[users.length-1].id;
-        const newId = lastId + 1;
-        const result = new User(newUser.username, newUser.fullName, newUser.email, newUser.email, newUser.password, newId);
-        users.push(result);
-        return result;
-    },
-    updateById(id, modifiedUser) {
-        const posicionEncontrado = indexOfPorId(id)
-        if (posicionEncontrado != -1) {
-            users[posicionEncontrado].username = modifiedUser.username;
-        }
-        return posicionEncontrado != -1 ? users[posicionEncontrado] : undefined;
-    },
-    update(modifiedUser){
-        return this.update(modifiedUser.id, modifiedUser);
-    },
-    delete(id){
-        const posicionEncontrado = indexOfPorId(id);
-        if(posicionEncontrado != -1)
-            users.splice(posicionEncontrado, 1);
-    } 
-}
-
-export {
+        await User.findByIdAndDelete(id).exec();
+    }
+  
+  }
+  
+  
+  export {
     User,
-    userRepository
-}
+    userRepository,
+    emailExists
+  }

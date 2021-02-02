@@ -1,34 +1,45 @@
 import{ songs,  songsRepository} from '../models/songs';
+import {validationResult} from 'express-validator';
 
 const SongController = {
 
-    todasLasCanciones : (req, res) => {
-        res.json(songsRepository.findAll());
+    todasLasCanciones : async (req, res) => {
+        res.json(await songsRepository.findAll());
     },
-    cancionPorId : (req, res) => {
-        let song = songsRepository.findById(req.params.id);
+    cancionPorId : async (req, res) => {
+        let song = await songsRepository.findById(req.params.id);
         if(song != undefined) {
             res.json(song);
         }else {
-            res.sendStatus(400);
+            res.sendStatus(404);
         }
     }, 
-    me : (req, res) => {
-        res.json(req.context.me);
+    nuevaCancion : async (req, res) => {
+        let nuevaSong = await songsRepository.create(new Song({
+            title: req.body.title,
+            artist: req.body.artist,
+            album: req.body.album,
+            year: req.body.year
+        }));
+        res.status(201).json({
+            id: nuevaSong.id,
+            title: nuevaSong.title
+        });
     },
-    nuevaCancion : (req, res) => {
-        let cancionCreada = songsRepository.create(new Song(undefined, req.body.title));
-        res.status(201).json(cancionCreada);
-    },
-    editarCancion: (req, res) => {
-        let cancionModificada = songsRepository.updateById(req.params.id, new Song(undefined, req.body.title));
+    editarCancion: async (req, res) => {
+        let cancionModificada = await songsRepository.updateById(req.params.id,{
+            title: req.body.title,
+            artist: req.body.artist,
+            album: req.body.album,
+            year: req.body.year
+        });
         if (cancionModificada == undefined)
             res.sendStatus(404);
         else   
             res.status(200).json(cancionModificada);
     },
-    eliminarCancion: (req, res) => {
-        songsRepository.delete(req.params.id);
+    eliminarCancion: async (req, res) => {
+        let song = await songsRepository.delete(req.params.id);
         res.sendStatus(204);
     }
 

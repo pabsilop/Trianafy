@@ -1,14 +1,16 @@
 import { users , userRepository} from '../models/users';
+import { validationResult} from 'express-validator';
+import bcrypt from 'bcryptjs';
 
 const UserController = {
 
-    todosLosUsuarios : (req, res) => {
-        res.json(userRepository.findAll());
+    todosLosUsuarios : async (req, res) => {
+        res.json(await userRepository.findAll());
     },
 
-    usuarioPorId: (req, res) => {
+    usuarioPorId: async (req, res) => {
 
-        let user = userRepository.findById(req.params.id);
+        let user = await userRepository.findById(req.params.id);
         if (user != undefined) {
             res.json(user);
         } else {
@@ -16,25 +18,27 @@ const UserController = {
         }
 
 },
-    me : (req, res) => {
-        res.json(req.context.me);
-    },
 
-    nuevoUsuario : (req, res) => {
-        let usuarioCreado = userRepository.create(new User(undefined, req.body.username));
+    nuevoUsuario : async (req, res) => {
+        let usuarioCreado = await userRepository.create(new User(req.body.username, req.body.email));
         res.status(201).json(usuarioCreado);
     },
 
-    editarUsuario: (req, res) => {
-        let usuarioModificado = userRepository.updateById(req.params.id, new User(undefined, req.body.username));
+    editarUsuario: async (req, res) => {
+        let usuarioModificado = await userRepository.updateById(req.params.id,{
+            username: req.body.username,
+            email: req.body.email,
+            fullname: req.body.fullname,
+            password: bcrypt.hashSync(req.body.password, parseInt(process.env.BCRYPT_ROUNDS))
+        });
         if (usuarioModificado == undefined)
             res.sendStatus(404);
         else   
             res.status(200).json(usuarioModificado);
     },
 
-    eliminarUsuario: (req, res) => {
-        userRepository.delete(req.params.id);
+    eliminarUsuario: async (req, res) => {
+    let user = await userRepository.delete(req.params.id);
         res.sendStatus(204);
     }
 
