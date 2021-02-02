@@ -1,4 +1,3 @@
-
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
@@ -7,7 +6,6 @@ import morgan from "morgan";
 import morganBody from "morgan-body";
 import passport from './services/passport';
 import mongoose from "mongoose";
-import models from './models';
 import routes from './routes';
 
 const app = express();

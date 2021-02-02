@@ -1,5 +1,5 @@
-import validar from './validacion';
+import validation from './validacion';
 
 export default{
-    validar
+    validation
 }

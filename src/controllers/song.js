@@ -1,5 +1,4 @@
 import{ songs,  songsRepository} from '../models/songs';
-import {validationResult} from 'express-validator';
 
 const SongController = {
 

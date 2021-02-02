@@ -1,5 +1,4 @@
 import { users , userRepository} from '../models/users';
-import { validationResult} from 'express-validator';
 import bcrypt from 'bcryptjs';
 
 const UserController = {

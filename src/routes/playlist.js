@@ -1,38 +1,37 @@
 import { Router } from "express";
-import { param, body } from 'express-validator';
+import { body } from 'express-validator';
 import { validar } from '../middlewares/validacion';
-import { PlayListController } from '../controllers/playList';
+import { PlaylistController } from '../controllers/playlist';
 import { token } from "../services/passport";
 
 
 const router = Router();
 
-router.get('/', token(), PlayListController.todasLasPlayList);
+router.get('/', token(), PlaylistController.allPlaylist);
 
-router.get('/:id',
-    validar, PlayListController.playListPorId);
+router.get('/:id', validar, PlaylistController.playlistById);
 
-router.get('/:id/songs', [], validar, PlayListController.todasLasCancionesDeUnaPlayList);
+router.get('/:id/songs', [], validar, PlaylistController.allSongsOfPlaylist);
 
-router.get('/:idSong/songs/:idPlayList', [], validar, PlayListController.cancionDePlayList);
+router.get('/:idSong/songs/:idPlaylist', [], validar, PlaylistController.songOfPlaylist);
 
 router.post('/', [
     body('nombre')
-        .exists().withMessage('El campo nombre es requerido')
-        .not().isEmpty().withMessage('El campo nombre no puede estar vacio'),
+        .exists().withMessage('Nombre requerido')
+        .not().isEmpty().withMessage('No puedes dejar el nombre vacio'),
     body('userId')
-        .not().exists().withMessage('El campo del usuario no es permitido'),
+        .not().exists().withMessage('No está permitido el campo usuario'),
     body('songList')
-        .not().exists().withMessage('La lista de canciones no es permitida en la creacion de la lista')
+        .not().exists().withMessage('')
 ],
-    validar, PlayListController.nuevaPlayList);
+    validar, PlaylistController.newPlaylist);
 
-router.post('/:idSong/songs/:idPlayList', [], validar, PlayListController.añadirCancionToPlayList);
+router.post('/:idSong/songs/:idPlaylist', [], validar, PlaylistController.addSongToPlaylist);
 
-router.put('/:id', PlayListController.editarPlayList);
+router.put('/:id', PlaylistController.editPlaylist);
 
-router.delete('/:id', PlayListController.eliminarPlayList);
+router.delete('/:id', PlaylistController.deletePlaylist);
 
-router.delete('/:idSong/songs/:idPlayList', PlayListController.eliminarCancionDePlayList);
+router.delete('/:idSong/songs/:idPlayList', PlaylistController.deleteSongOfPlaylist);
 
 export default router;

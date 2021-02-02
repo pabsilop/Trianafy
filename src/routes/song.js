@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { param, body } from 'express-validator';
+import { body } from 'express-validator';
 import { validar } from '../middlewares/validacion'
 import { SongController } from '../controllers/song'
 import { token } from "../services/passport";
@@ -13,17 +13,17 @@ router.get('/:id',
 
 router.post('/', [
     body('title')
-                .isLength({min:6}).withMessage('Longitud de titulo minima de 6 caracteres.')
-                .exists().withMessage('El campo title es requerido.')
-                .not().isEmpty().withMessage('El campo title es requerido.'),
+        .isLength({min:6}).withMessage('El título debe tener como mínimo 6 carácteres')
+        .exists().withMessage('El título es un campo requerido.')
+        .not().isEmpty().withMessage('El title es requerido.'),
 
     body('artist')
-                .exists().withMessage('El campo artist es requerido.')
-                .not().isEmpty().withMessage('El campo artist es requerido.'),
+        .exists().withMessage('El artista es requerido')
+        .not().isEmpty().withMessage('El artista es requerido'),
 
     body('album')
-                .exists().withMessage('El campo album es requerido.')
-                .not().isEmpty().withMessage('El campo album es requerido.')
+        .exists().withMessage('El album es requerido')
+        .not().isEmpty().withMessage('El album es requerido')
 ],
     validar, SongController.nuevaCancion);
 
