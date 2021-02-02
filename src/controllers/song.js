@@ -1,4 +1,4 @@
-import{ songs,  songsRepository} from '../models/songs';
+import{ Song,  songsRepository} from '../models/songs';
 
 const SongController = {
 

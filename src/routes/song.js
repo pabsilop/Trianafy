@@ -6,7 +6,7 @@ import { token } from "../services/passport";
 
 const router = Router();
 
-router.get('/', token(), SongController.todasLasCanciones);
+router.get('/', SongController.todasLasCanciones);
 
 router.get('/:id',
     validar, SongController.cancionPorId);
